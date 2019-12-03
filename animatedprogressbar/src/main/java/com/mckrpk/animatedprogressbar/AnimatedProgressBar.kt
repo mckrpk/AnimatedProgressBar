@@ -6,8 +6,10 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import kotlin.math.min
 
-class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context, attrs), DrawingView {
+class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context, attrs),
+    DrawingView {
 
     private var mProgress: Float = 0f
     private var notDrawnYet = true
@@ -19,24 +21,23 @@ class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context,
         WAVE
     }
 
-    private var progressStyle: ProgressStyle = ProgressStyle.SIMPLE
-
     //Elements to draw
     private var trackDrawer: TrackDrawer?
     private var progressDrawer: ProgressDrawer? = null
     private var waveDrawer: WaveDrawer? = null
 
+    private var attributes: ViewProperties
+
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.AnimatedProgressBar, 0, 0).apply {
             try {
-                val styleIndex = getInt(R.styleable.AnimatedProgressBar_animationStyle, 0)
-                progressStyle = ProgressStyle.values()[styleIndex]
+                attributes = ViewProperties(this, context)
 
-                trackDrawer = TrackDrawer(this@AnimatedProgressBar, this, getContext())
-                if (ProgressStyle.WAVE == progressStyle) {
-                    waveDrawer = WaveDrawer(this@AnimatedProgressBar, this, getContext())
+                trackDrawer = TrackDrawer(this@AnimatedProgressBar, attributes)
+                if (ProgressStyle.WAVE == attributes.progressStyle) {
+                    waveDrawer = WaveDrawer(this@AnimatedProgressBar, attributes)
                 } else {
-                    progressDrawer = ProgressDrawer(this@AnimatedProgressBar, this, getContext())
+                    progressDrawer = ProgressDrawer(this@AnimatedProgressBar, attributes)
                 }
             } finally {
                 recycle()
@@ -45,7 +46,7 @@ class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context,
     }
 
     fun setStyle(progressStyle: ProgressStyle) {
-        if (progressStyle == this.progressStyle) {
+        if (attributes.progressStyle == progressStyle) {
             return
         }
 
@@ -87,9 +88,11 @@ class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context,
         val mDrawEndPosY = (h - paddingBottom).toFloat()
 
         val drawRect = RectF(mDrawStartPosX, mDrawStartPosY, mDrawEndPosX, mDrawEndPosY)
+        attributes.drawRect = drawRect
+        attributes.mLineWidth = min(drawRect.height(), attributes.mLineWidth)
         waveDrawer?.setDrawingRect(drawRect)
-        trackDrawer?.setDrawingRect(drawRect)
-        progressDrawer?.setDrawingRect(drawRect)
+        trackDrawer?.onViewReady()
+        progressDrawer?.onViewReady()
 
         Log.i("customView", "onSizeChanged: $oldw -> $w, $oldh -> $h")
     }
@@ -102,7 +105,7 @@ class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context,
         // val specSize = View.MeasureSpec.getSize(widthMeasureSpec)
 
         val minHeight =
-                context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_min_height)
+            context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_min_height)
 
         //Remember to take paddings into account
         val minw = paddingLeft + suggestedMinimumWidth + paddingRight
