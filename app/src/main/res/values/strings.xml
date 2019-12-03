@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ProgressBarDemo</string>
+    <string name="action_simple_style">Simple</string>
+    <string name="action_wave_style">Waves</string>
+</resources>

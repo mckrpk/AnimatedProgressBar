@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AnimatedProgressBar">
+        <attr name="trackColor" format="color" />
+        <attr name="progressColor" format="color" />
+        <attr name="progressTipColor" format="color" />
+        <attr name="progressTipEnabled" format="boolean" />
+        <attr name="animationDurationInMs" format="integer" />
+        <attr name="animationStyle" format="enum">
+            <enum name="simple" value="0" />
+            <enum name="wave" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

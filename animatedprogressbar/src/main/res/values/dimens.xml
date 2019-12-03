@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="animated_progress_bar_min_height">32dp</dimen>
+    <dimen name="animated_progress_bar_line_width">4dp</dimen>
+    <dimen name="animated_progress_bar_progress_tip_width">2dp</dimen>
+</resources>
