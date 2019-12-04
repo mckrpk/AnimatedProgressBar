@@ -6,25 +6,35 @@ import android.graphics.RectF
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.max
 
-internal class ProgressDrawer(val listener: DrawingView, val attrs: ViewProperties) {
+internal class ProgressDrawer(
+    private val listener: DrawingView,
+    private val attrs: ViewProperties
+) : ShapeDrawer() {
 
     private lateinit var progressRect: RectF
     private lateinit var progressTipRect: RectF
 
     protected var progressAnimator: ValueAnimator? = null
 
-    fun progressAnimation(progress: Float) {
+    override fun onSizeChanged() {
+        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.trackWidth) / 2
+        val lineBottomY = lineTopY + attrs.trackWidth
+        progressRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
+        progressTipRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.right, lineBottomY)
+    }
+
+    override fun startAnimation(targetProgress: Float) {
         progressAnimator?.cancel()
 
-        val endValX = attrs.drawRect.left + progress * attrs.drawRect.width()
+        val endValX = attrs.drawRect.left + targetProgress * attrs.drawRect.width()
         progressAnimator = ValueAnimator.ofFloat(attrs.drawRect.left, endValX).apply {
-            duration = AnimatedProgressBar.ANIM_DURATION.toLong()
+            duration = attrs.animDuration.toLong()
             interpolator = DecelerateInterpolator(1f)
             addUpdateListener { animation ->
                 progressRect.right = animation.animatedValue as Float
                 if (attrs.progressTipEnabled) {
                     progressTipRect.right = animation.animatedValue as Float
-                    progressTipRect.left = max(0f, progressTipRect.right - attrs.mProgressTipWidth)
+                    progressTipRect.left = max(0f, progressTipRect.right - attrs.progressTipWidth)
                 }
                 listener.requestInvalidate()
             }
@@ -32,27 +42,20 @@ internal class ProgressDrawer(val listener: DrawingView, val attrs: ViewProperti
         progressAnimator?.start()
     }
 
-    fun onViewReady() {
-        this.attrs.drawRect = attrs.drawRect
-        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.mLineWidth) / 2
-        val lineBottomY = lineTopY + attrs.mLineWidth
-        progressRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
-        if (attrs.progressTipEnabled) {
-            progressTipRect =
-                RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.right, lineBottomY)
-        }
-    }
-
-    fun draw(canvas: Canvas?) {
-        canvas?.drawRoundRect(
+    override fun draw(canvas: Canvas) {
+        canvas.drawRoundRect(
             progressRect,
-            attrs.mCornerRadius,
-            attrs.mCornerRadius,
+            attrs.cornerRadius,
+            attrs.cornerRadius,
             attrs.progressPaint
         )
         if (attrs.progressTipEnabled) {
-            canvas?.drawRect(progressTipRect, attrs.progressTipPaint)
+            canvas.drawRect(progressTipRect, attrs.progressTipPaint)
         }
+    }
+
+    override fun cancel() {
+        progressAnimator?.cancel()
     }
 
 }

@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener { view ->
             animProgress.setProgress(1f)
+            animProgress.requestInvalidate()
             animProgress2.setProgress(1f)
 //            recyclerView.adapter?.notifyDataSetChanged()
         }

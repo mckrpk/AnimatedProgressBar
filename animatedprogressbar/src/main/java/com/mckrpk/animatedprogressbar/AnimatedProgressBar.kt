@@ -6,76 +6,118 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import kotlin.math.min
 
-class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context, attrs),
-    DrawingView {
+class AnimatedProgressBar @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr), DrawingView {
 
-    private var mProgress: Float = 0f
-    private var notDrawnYet = true
+    private var shouldStartAnimation = true
 
     private var lastDraw = System.currentTimeMillis()
-
-    enum class ProgressStyle {
-        SIMPLE,
-        WAVE
-    }
 
     //Elements to draw
     private var trackDrawer: TrackDrawer?
     private var progressDrawer: ProgressDrawer? = null
     private var waveDrawer: WaveDrawer? = null
 
-    private var attributes: ViewProperties
+    private var attrs: ViewProperties
 
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.AnimatedProgressBar, 0, 0).apply {
             try {
-                attributes = ViewProperties(this, context)
-
-                trackDrawer = TrackDrawer(this@AnimatedProgressBar, attributes)
-                if (ProgressStyle.WAVE == attributes.progressStyle) {
-                    waveDrawer = WaveDrawer(this@AnimatedProgressBar, attributes)
-                } else {
-                    progressDrawer = ProgressDrawer(this@AnimatedProgressBar, attributes)
-                }
+                this@AnimatedProgressBar.attrs = ViewProperties(this, context)
             } finally {
                 recycle()
             }
         }
-    }
-
-    fun setStyle(progressStyle: ProgressStyle) {
-        if (attributes.progressStyle == progressStyle) {
-            return
-        }
-
-        when (progressStyle) {
-            ProgressStyle.SIMPLE -> {
-                waveDrawer?.cancel()
-                waveDrawer = null
-//                progressDrawer = ProgressDrawer(this, this, context)
-            }
-            ProgressStyle.WAVE -> {
-
-            }
+        trackDrawer = TrackDrawer(this, this.attrs)
+        if (ProgressStyle.WAVE == this.attrs.progressStyle) {
+            waveDrawer = WaveDrawer(this, this.attrs)
+        } else {
+            progressDrawer = ProgressDrawer(this, this.attrs)
         }
     }
 
-    fun setProgress(progress: Float) {
-        mProgress = progress
-        notDrawnYet = true
-
+    fun setProgressColor(color: Int) {
+        attrs.progressColor = color
         postInvalidate()
     }
 
-    private fun startAnimation(progress: Float) {
-        notDrawnYet = false
-        trackDrawer?.trackAnimation()
-        progressDrawer?.progressAnimation(progress)
-        waveDrawer?.waveAnimation(progress)
+    fun setProgressTipColor(color: Int) {
+        attrs.progressTipColor = color
+        postInvalidate()
     }
 
+    fun setTrackColor(color: Int) {
+        attrs.trackColor = color
+        postInvalidate()
+    }
+
+    fun setAnimDuration(duration: Int) {
+        attrs.animDuration = duration
+        postInvalidate()
+    }
+
+    fun setProgressTipEnabled(enabled: Boolean) {
+        attrs.progressTipEnabled = enabled
+        postInvalidate()
+    }
+
+    fun setProgressStyle(progressStyle: ProgressStyle) {
+        if (attrs.progressStyle == progressStyle) {
+            return
+        }
+        attrs.progressStyle = progressStyle
+        if (ProgressStyle.WAVE == this.attrs.progressStyle) {
+            progressDrawer?.cancel()
+            waveDrawer = WaveDrawer(this, this.attrs)
+        } else {
+            waveDrawer?.cancel()
+            progressDrawer = ProgressDrawer(this, this.attrs)
+
+        }
+        postInvalidate()
+    }
+
+    fun setTrackWidth(width: Float) {
+        attrs.trackWidth = width
+
+        trackDrawer?.onSizeChanged()
+        progressDrawer?.onSizeChanged()
+        waveDrawer?.onSizeChanged()
+        postInvalidate()
+    }
+
+    fun setProgressTipWidth(width: Float) {
+        attrs.progressTipWidth = width
+        progressDrawer?.onSizeChanged()
+        postInvalidate()
+    }
+
+    fun setProgress(progress: Float) {
+        setProgress(progress, true)
+    }
+
+    fun setProgress(progress: Float, animate: Boolean) {
+        attrs.progress = progress
+        shouldStartAnimation = animate
+        postInvalidate()
+    }
+
+    fun setMax(maxProgress: Float) {
+        attrs.maxProgress = maxProgress
+    }
+
+    private fun startAnimation() {
+        shouldStartAnimation = false
+        trackDrawer?.startAnimation(attrs.getProgressNormalized())
+        progressDrawer?.startAnimation(attrs.getProgressNormalized())
+        waveDrawer?.startAnimation(attrs.getProgressNormalized())
+    }
+
+    //TODO hide from outside
     override fun requestInvalidate() {
         invalidate()
     }
@@ -88,11 +130,10 @@ class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context,
         val mDrawEndPosY = (h - paddingBottom).toFloat()
 
         val drawRect = RectF(mDrawStartPosX, mDrawStartPosY, mDrawEndPosX, mDrawEndPosY)
-        attributes.drawRect = drawRect
-        attributes.mLineWidth = min(drawRect.height(), attributes.mLineWidth)
-        waveDrawer?.setDrawingRect(drawRect)
-        trackDrawer?.onViewReady()
-        progressDrawer?.onViewReady()
+        attrs.drawRect = drawRect
+        waveDrawer?.onSizeChanged()
+        trackDrawer?.onSizeChanged()
+        progressDrawer?.onSizeChanged()
 
         Log.i("customView", "onSizeChanged: $oldw -> $w, $oldh -> $h")
     }
@@ -129,12 +170,13 @@ class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context,
         Log.i("customView", "onLayout")
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val time = System.currentTimeMillis() - lastDraw
-        Log.i("customView", "Previous draw: $time${if (time > 25) "<----------------" else ""}")
-        if (notDrawnYet) {
-            startAnimation(mProgress)
+//        Log.i("customView", "Previous draw: $time${if (time > 25) "<----------------" else ""}")
+        if (shouldStartAnimation) {
+            startAnimation()
+            Log.i("customView", "Starting animation")
         }
 
         lastDraw = System.currentTimeMillis()
@@ -144,9 +186,9 @@ class AnimatedProgressBar(context: Context, attrs: AttributeSet) : View(context,
         progressDrawer?.draw(canvas)
     }
 
-
-    companion object {
-        val ANIM_DURATION = 1500
+    enum class ProgressStyle {
+        SIMPLE,
+        WAVE
     }
 }
 

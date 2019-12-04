@@ -5,20 +5,36 @@ import android.content.res.TypedArray
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.core.content.ContextCompat
+import kotlin.math.min
 
 internal class ViewProperties(attrs: TypedArray, context: Context) {
 
+    var maxProgress: Float = 100f
+    var progress: Float = 0f
+
     var progressColor: Int = 0
+        set(value) {
+            field = value
+            progressPaint.color = value
+        }
     var trackColor: Int = 0
+        set(value) {
+            field = value
+            trackPaint.color = value
+        }
     var progressTipColor: Int = 0
+        set(value) {
+            field = value
+            progressTipPaint.color = value
+        }
 
     var animDuration: Int
     var progressTipEnabled: Boolean = false
     var progressStyle: AnimatedProgressBar.ProgressStyle = AnimatedProgressBar.ProgressStyle.SIMPLE
 
-    var mCornerRadius: Float = 0f
-    var mLineWidth: Float = 0f
-    var mProgressTipWidth: Float = 0f
+    var cornerRadius: Float = 0f
+    var trackWidth: Float = 0f
+    var progressTipWidth: Float = 0f
 
     var trackPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var progressPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -26,8 +42,16 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
     var wavePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     var drawRect: RectF = RectF()
+        set(value) {
+            field = value
+            trackWidth = min(drawRect.height(), trackWidth)
+        }
 
     init {
+        //PROGRESS
+        maxProgress = attrs.getInt(R.styleable.AnimatedProgressBar_max, 100).toFloat()
+        progress = attrs.getInt(R.styleable.AnimatedProgressBar_progress, 0).toFloat()
+
         //OTHERS
         val styleIndex = attrs.getInt(R.styleable.AnimatedProgressBar_animationStyle, 0)
         progressStyle = AnimatedProgressBar.ProgressStyle.values()[styleIndex]
@@ -36,7 +60,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
 
         animDuration = attrs.getInt(
             R.styleable.AnimatedProgressBar_animationDurationInMs,
-            AnimatedProgressBar.ANIM_DURATION
+            context.resources.getInteger(R.integer.animation_duration)
         )
 
         //COLORS
@@ -53,13 +77,14 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
             ContextCompat.getColor(context, R.color.defaultTrack)
         )
 
-        mProgressTipWidth =
+        progressTipWidth =
             context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_progress_tip_width)
                 .toFloat()
-        mLineWidth =
+        trackWidth = attrs.getDimensionPixelSize(
+            R.styleable.AnimatedProgressBar_lineWidth,
             context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_line_width)
-                .toFloat()
-        mCornerRadius = mLineWidth / 2
+        ).toFloat()
+        cornerRadius = trackWidth / 2
 
         //PAINTS
         progressPaint.color = progressColor
@@ -67,7 +92,10 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
         progressTipPaint.color = progressTipColor
         wavePaint.color = progressColor
         wavePaint.style = Paint.Style.STROKE
-        wavePaint.strokeWidth = mLineWidth
+        wavePaint.strokeWidth = trackWidth
         wavePaint.strokeCap = Paint.Cap.ROUND
     }
+
+    fun getProgressNormalized() = progress / maxProgress
+
 }
