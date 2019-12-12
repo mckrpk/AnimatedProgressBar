@@ -2,6 +2,7 @@ package com.mckrpk.animatedprogressbar
 
 import android.content.Context
 import android.os.Build
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
@@ -45,4 +46,8 @@ fun getThemePrimaryDarkColor(context: Context, @ColorRes fallbackColorRes: Int):
             .getIdentifier("colorPrimaryDark", "attr", context.packageName)
         getThemeColor(context, colorAttr, fallbackColorRes)
     }
+}
+
+fun dpToPx(dp: Float, context: Context): Float {
+    return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
 }
