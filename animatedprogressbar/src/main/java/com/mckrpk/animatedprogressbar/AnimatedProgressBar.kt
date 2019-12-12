@@ -72,17 +72,21 @@ class AnimatedProgressBar @JvmOverloads constructor(
         attrs.progressStyle = progressStyle
         if (ProgressStyle.WAVE == this.attrs.progressStyle) {
             progressDrawer?.cancel()
+            progressDrawer = null
             waveDrawer = WaveDrawer(this, this.attrs)
         } else {
             waveDrawer?.cancel()
+            waveDrawer = null
             progressDrawer = ProgressDrawer(this, this.attrs)
-
         }
         postInvalidate()
     }
 
-    fun setTrackWidth(width: Float) {
-        attrs.trackWidth = width
+    /**
+     * @width in pixels
+     */
+    fun setTrackWidth(width: Int) {
+        attrs.trackWidth = width.toFloat()
 
         trackDrawer?.onSizeChanged()
         progressDrawer?.onSizeChanged()
@@ -129,8 +133,7 @@ class AnimatedProgressBar @JvmOverloads constructor(
         val mDrawStartPosY = paddingTop.toFloat()
         val mDrawEndPosY = (h - paddingBottom).toFloat()
 
-        val drawRect = RectF(mDrawStartPosX, mDrawStartPosY, mDrawEndPosX, mDrawEndPosY)
-        attrs.drawRect = drawRect
+        attrs.drawRect = RectF(mDrawStartPosX, mDrawStartPosY, mDrawEndPosX, mDrawEndPosY)
         waveDrawer?.onSizeChanged()
         trackDrawer?.onSizeChanged()
         progressDrawer?.onSizeChanged()
@@ -145,8 +148,9 @@ class AnimatedProgressBar @JvmOverloads constructor(
         // val specMode = View.MeasureSpec.getMode(widthMeasureSpec)
         // val specSize = View.MeasureSpec.getSize(widthMeasureSpec)
 
-        val minHeight =
+        val defaultHeight =
             context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_min_height)
+        val minHeight = defaultHeight.coerceAtLeast((attrs.trackWidth * 3).toInt())
 
         //Remember to take paddings into account
         val minw = paddingLeft + suggestedMinimumWidth + paddingRight
@@ -160,23 +164,12 @@ class AnimatedProgressBar @JvmOverloads constructor(
         setMeasuredDimension(w, h)
     }
 
-    override fun onAttachedToWindow() {
-        Log.i("customView", "onAttachedToWindow")
-        super.onAttachedToWindow()
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        Log.i("customView", "onLayout")
-    }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val time = System.currentTimeMillis() - lastDraw
 //        Log.i("customView", "Previous draw: $time${if (time > 25) "<----------------" else ""}")
         if (shouldStartAnimation) {
             startAnimation()
-            Log.i("customView", "Starting animation")
         }
 
         lastDraw = System.currentTimeMillis()

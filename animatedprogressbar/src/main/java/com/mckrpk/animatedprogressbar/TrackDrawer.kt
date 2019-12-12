@@ -15,7 +15,6 @@ internal open class TrackDrawer(private val listener: DrawingView, val attrs: Vi
         val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.trackWidth) / 2
         val lineBottomY = lineTopY + attrs.trackWidth
         trackRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
-
     }
 
     override fun startAnimation(targetProgress: Float) {

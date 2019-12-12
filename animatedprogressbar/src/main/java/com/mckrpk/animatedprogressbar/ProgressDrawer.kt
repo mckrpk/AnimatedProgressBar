@@ -2,8 +2,10 @@ package com.mckrpk.animatedprogressbar
 
 import android.animation.ValueAnimator
 import android.graphics.Canvas
+import android.graphics.Path
 import android.graphics.RectF
 import android.view.animation.DecelerateInterpolator
+import androidx.core.graphics.withClip
 import kotlin.math.max
 
 internal class ProgressDrawer(
@@ -12,7 +14,9 @@ internal class ProgressDrawer(
 ) : ShapeDrawer() {
 
     private lateinit var progressRect: RectF
+    private lateinit var trackRect: RectF
     private lateinit var progressTipRect: RectF
+    private val clipPath: Path = Path()
 
     protected var progressAnimator: ValueAnimator? = null
 
@@ -20,7 +24,9 @@ internal class ProgressDrawer(
         val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.trackWidth) / 2
         val lineBottomY = lineTopY + attrs.trackWidth
         progressRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
-        progressTipRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.right, lineBottomY)
+        trackRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.right, lineBottomY)
+        progressTipRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
+        clipPath.addRoundRect(trackRect, attrs.cornerRadius, attrs.cornerRadius, Path.Direction.CW)
     }
 
     override fun startAnimation(targetProgress: Float) {
@@ -31,10 +37,12 @@ internal class ProgressDrawer(
             duration = attrs.animDuration.toLong()
             interpolator = DecelerateInterpolator(1f)
             addUpdateListener { animation ->
-                progressRect.right = animation.animatedValue as Float
+                val animatedValue = animation.animatedValue as Float
+                progressRect.right = animatedValue
                 if (attrs.progressTipEnabled) {
-                    progressTipRect.right = animation.animatedValue as Float
-                    progressTipRect.left = max(0f, progressTipRect.right - attrs.progressTipWidth)
+                    progressTipRect.right = animatedValue
+                    progressTipRect.left =
+                        max(attrs.drawRect.left, progressTipRect.right - attrs.trackWidth)
                 }
                 listener.requestInvalidate()
             }
@@ -43,14 +51,16 @@ internal class ProgressDrawer(
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawRoundRect(
-            progressRect,
-            attrs.cornerRadius,
-            attrs.cornerRadius,
-            attrs.progressPaint
-        )
-        if (attrs.progressTipEnabled) {
-            canvas.drawRect(progressTipRect, attrs.progressTipPaint)
+        canvas.withClip(clipPath) {
+            drawRoundRect(progressRect, attrs.cornerRadius, attrs.cornerRadius, attrs.progressPaint)
+            if (attrs.progressTipEnabled) {
+                drawRoundRect(
+                    progressTipRect,
+                    attrs.cornerRadius,
+                    attrs.cornerRadius,
+                    attrs.progressTipPaint
+                )
+            }
         }
     }
 

@@ -12,6 +12,10 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
     var maxProgress: Float = 100f
     var progress: Float = 0f
 
+    var animDuration: Int
+    var progressTipEnabled: Boolean = false
+    var progressStyle: AnimatedProgressBar.ProgressStyle = AnimatedProgressBar.ProgressStyle.SIMPLE
+
     var progressColor: Int = 0
         set(value) {
             field = value
@@ -28,12 +32,13 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
             progressTipPaint.color = value
         }
 
-    var animDuration: Int
-    var progressTipEnabled: Boolean = false
-    var progressStyle: AnimatedProgressBar.ProgressStyle = AnimatedProgressBar.ProgressStyle.SIMPLE
-
-    var cornerRadius: Float = 0f
     var trackWidth: Float = 0f
+        set(value) {
+            field = value
+            cornerRadius = trackWidth / 2
+            progressTipWidth = trackWidth
+        }
+    var cornerRadius: Float = 0f
     var progressTipWidth: Float = 0f
 
     var trackPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -85,6 +90,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
             context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_line_width)
         ).toFloat()
         cornerRadius = trackWidth / 2
+        progressTipWidth = trackWidth
 
         //PAINTS
         progressPaint.color = progressColor
@@ -94,6 +100,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
         wavePaint.style = Paint.Style.STROKE
         wavePaint.strokeWidth = trackWidth
         wavePaint.strokeCap = Paint.Cap.ROUND
+        wavePaint.strokeJoin = Paint.Join.ROUND
     }
 
     fun getProgressNormalized() = progress / maxProgress
