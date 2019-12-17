@@ -9,37 +9,27 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.mckrpk.animatedprogressbar.AnimatedProgressBar
-        android:id="@+id/animatedProgressBar"
+    <LinearLayout
+        android:id="@+id/barsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        app:animationStyle="simple"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lineWidth="5dp"
-        app:progressTipEnabled="true" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.mckrpk.animatedprogressbar.AnimatedProgressBar
-        android:id="@+id/animatedProgressBar2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:animationStyle="wave"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/animatedProgressBar"
-        app:lineWidth="5dp"
-        app:progressColor="@color/colorPrimary"
-        app:progressTipColor="@color/colorAccent"
-        app:progressTipEnabled="true"
-        app:trackColor="@color/colorGray" />
+        <com.mckrpk.animatedprogressbar.AnimatedProgressBar
+            android:id="@+id/animatedProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:animationStyle="simple"
+            app:lineWidth="5dp"
+            app:progressTipEnabled="true" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -53,6 +43,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/animatedProgressBar2" />
+        app:layout_constraintTop_toBottomOf="@+id/barsContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

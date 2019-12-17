@@ -2,11 +2,11 @@ package com.mckrpk.animatedprogressbar.sample
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.mckrpk.animatedprogressbar.AnimatedProgressBar
@@ -24,19 +24,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        recyclerView.setHasFixedSize(true)
-
-        fab.setOnClickListener { view ->
-            updateViewProgramatically(animatedProgressBar)
-            animatedProgressBar2.setProgress(50f)
+        fab.setOnClickListener {
+            addViewProgrammatically()
         }
 
+        recyclerView.setHasFixedSize(true)
         recyclerView.adapter = MyAdapter(50)
+
+        animatedProgressBar.setProgress((Math.random() * 100).toInt())
     }
 
-    private fun updateViewProgramatically(animatedProgressBar: AnimatedProgressBar): AnimatedProgressBar {
-        animatedProgressBar.setMax(100f)
-        animatedProgressBar.setProgress((Math.random() * 100).toFloat())
+    private fun addViewProgrammatically(): AnimatedProgressBar {
+        val animatedProgressBar = AnimatedProgressBar(this)
+        animatedProgressBar.setMax(100)
+        animatedProgressBar.setProgress((Math.random() * 100).toInt())
         animatedProgressBar.setTrackColor(getRandomColor())
         animatedProgressBar.setProgressColor(getRandomColor())
         animatedProgressBar.setProgressTipEnabled(Math.random() < 0.5)
@@ -46,6 +47,15 @@ class MainActivity : AppCompatActivity() {
         animatedProgressBar.setTrackWidth(
             dpToPx(3f + (Math.random() * 10).toFloat(), this).roundToInt()
         )
+
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        val marginTopBottom = dpToPx(4f, this).toInt()
+        params.setMargins(0, marginTopBottom, 0, marginTopBottom)
+        barsContainer.addView(animatedProgressBar, params)
 
         return animatedProgressBar
     }
@@ -96,13 +106,7 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder.number = position
             holder.progressBar.setProgressStyle(style)
-            holder.progressBar.setProgress(Math.random().toFloat() * 100)
-            Log.i("customView", "Adapter:onBindViewHolder")
-        }
-
-        override fun onViewAttachedToWindow(holder: MyViewHolder) {
-            super.onViewAttachedToWindow(holder)
-            Log.i("customView", "Adapter:onViewAttachedToWindow")
+            holder.progressBar.setProgress((Math.random() * 100).toInt())
         }
 
         override fun getItemCount() = itemSize

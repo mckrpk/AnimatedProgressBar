@@ -100,18 +100,18 @@ class AnimatedProgressBar @JvmOverloads constructor(
         postInvalidate()
     }
 
-    fun setProgress(progress: Float) {
+    fun setProgress(progress: Int) {
         setProgress(progress, true)
     }
 
-    fun setProgress(progress: Float, animate: Boolean) {
-        attrs.progress = progress
+    fun setProgress(progress: Int, animate: Boolean) {
+        attrs.progress = progress.toFloat()
         shouldStartAnimation = animate
         postInvalidate()
     }
 
-    fun setMax(maxProgress: Float) {
-        attrs.maxProgress = maxProgress
+    fun setMax(maxProgress: Int) {
+        attrs.maxProgress = maxProgress.toFloat()
     }
 
     private fun startAnimation() {
