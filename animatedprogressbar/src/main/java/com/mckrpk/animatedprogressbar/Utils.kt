@@ -48,6 +48,6 @@ fun getThemePrimaryDarkColor(context: Context, @ColorRes fallbackColorRes: Int):
     }
 }
 
-fun dpToPx(dp: Float, context: Context): Float {
+fun dpToPx(dp: Int, context: Context): Float {
     return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
 }

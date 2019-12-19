@@ -10,7 +10,7 @@
         <attr name="animationDurationInMs" format="integer" />
         <attr name="lineWidth" format="dimension" />
         <attr name="animationStyle" format="enum">
-            <enum name="simple" value="0" />
+            <enum name="line" value="0" />
             <enum name="wave" value="1" />
         </attr>
     </declare-styleable>

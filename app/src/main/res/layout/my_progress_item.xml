@@ -7,7 +7,7 @@
     android:layout_height="24dp"
     android:layout_marginTop="16dp"
     app:animationDurationInMs="1200"
-    app:animationStyle="simple"
+    app:animationStyle="line"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"

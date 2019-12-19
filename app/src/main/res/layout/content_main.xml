@@ -25,9 +25,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:animationStyle="simple"
+            app:animationDurationInMs="1200"
+            app:animationStyle="line"
             app:lineWidth="5dp"
-            app:progressTipEnabled="true" />
+            app:max="100"
+            app:progress="75"
+            app:progressColor="@color/colorPrimary"
+            app:progressTipColor="@color/colorAccent"
+            app:progressTipEnabled="true"
+            app:trackColor="@color/colorGray" />
+
+        <com.mckrpk.animatedprogressbar.AnimatedProgressBar
+            android:id="@+id/animatedProgressBar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            app:animationDurationInMs="1200"
+            app:animationStyle="wave"
+            app:lineWidth="5dp"
+            app:max="100"
+            app:progress="75"
+            app:progressColor="@color/colorPrimary"
+            app:progressTipColor="@color/colorAccent"
+            app:progressTipEnabled="true"
+            app:trackColor="@color/colorGray" />
 
     </LinearLayout>
 

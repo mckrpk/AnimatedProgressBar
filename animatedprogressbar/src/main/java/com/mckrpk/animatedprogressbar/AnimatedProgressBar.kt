@@ -33,7 +33,7 @@ class AnimatedProgressBar @JvmOverloads constructor(
             }
         }
         trackDrawer = TrackDrawer(this, this.attrs)
-        if (ProgressStyle.WAVE == this.attrs.progressStyle) {
+        if (Style.WAVE == this.attrs.progressStyle) {
             waveDrawer = WaveDrawer(this, this.attrs)
         } else {
             progressDrawer = ProgressDrawer(this, this.attrs)
@@ -65,12 +65,12 @@ class AnimatedProgressBar @JvmOverloads constructor(
         postInvalidate()
     }
 
-    fun setProgressStyle(progressStyle: ProgressStyle) {
+    fun setProgressStyle(progressStyle: Style) {
         if (attrs.progressStyle == progressStyle) {
             return
         }
         attrs.progressStyle = progressStyle
-        if (ProgressStyle.WAVE == this.attrs.progressStyle) {
+        if (Style.WAVE == this.attrs.progressStyle) {
             progressDrawer?.cancel()
             progressDrawer = null
             waveDrawer = WaveDrawer(this, this.attrs)
@@ -85,18 +85,12 @@ class AnimatedProgressBar @JvmOverloads constructor(
     /**
      * @width in pixels
      */
-    fun setTrackWidth(width: Int) {
-        attrs.trackWidth = width.toFloat()
+    fun setLineWidth(width: Int) {
+        attrs.lineWidth = width.toFloat()
 
         trackDrawer?.onSizeChanged()
         progressDrawer?.onSizeChanged()
         waveDrawer?.onSizeChanged()
-        postInvalidate()
-    }
-
-    fun setProgressTipWidth(width: Float) {
-        attrs.progressTipWidth = width
-        progressDrawer?.onSizeChanged()
         postInvalidate()
     }
 
@@ -150,7 +144,7 @@ class AnimatedProgressBar @JvmOverloads constructor(
 
         val defaultHeight =
             context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_min_height)
-        val minHeight = defaultHeight.coerceAtLeast((attrs.trackWidth * 3).toInt())
+        val minHeight = defaultHeight.coerceAtLeast((attrs.lineWidth * 3).toInt())
 
         //Remember to take paddings into account
         val minw = paddingLeft + suggestedMinimumWidth + paddingRight
@@ -179,8 +173,8 @@ class AnimatedProgressBar @JvmOverloads constructor(
         progressDrawer?.draw(canvas)
     }
 
-    enum class ProgressStyle {
-        SIMPLE,
+    enum class Style {
+        LINE,
         WAVE
     }
 }

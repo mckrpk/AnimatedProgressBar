@@ -22,10 +22,10 @@ internal class WaveDrawer(private val listener: DrawingView, private val attrs: 
 
     override fun onSizeChanged() {
         middleY = (attrs.drawRect.top + attrs.drawRect.bottom) / 2
-        attrs.wavePaint.strokeWidth = attrs.trackWidth
+        attrs.wavePaint.strokeWidth = attrs.lineWidth
 
-        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.trackWidth) / 2
-        val lineBottomY = lineTopY + attrs.trackWidth
+        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.lineWidth) / 2
+        val lineBottomY = lineTopY + attrs.lineWidth
 
         waveTipRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
 
@@ -44,9 +44,9 @@ internal class WaveDrawer(private val listener: DrawingView, private val attrs: 
         val targetLineWidth = targetProgress * attrs.drawRect.width()
         var currentDrawProgress: Float
 
-        longLine = targetLineWidth > attrs.trackWidth
+        longLine = targetLineWidth > attrs.lineWidth
 
-        val progressRange = if (longLine) targetLineWidth - attrs.trackWidth else targetLineWidth
+        val progressRange = if (longLine) targetLineWidth - attrs.lineWidth else targetLineWidth
         val xCoordStart = attrs.drawRect.left + (attrs.cornerRadius * if (longLine) 1 else -1)
 
         progressAnimator?.cancel()

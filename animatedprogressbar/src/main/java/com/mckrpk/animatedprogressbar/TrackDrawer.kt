@@ -12,8 +12,8 @@ internal open class TrackDrawer(private val listener: DrawingView, val attrs: Vi
     private var trackAnimator: ValueAnimator? = null
 
     override fun onSizeChanged() {
-        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.trackWidth) / 2
-        val lineBottomY = lineTopY + attrs.trackWidth
+        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.lineWidth) / 2
+        val lineBottomY = lineTopY + attrs.lineWidth
         trackRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
     }
 

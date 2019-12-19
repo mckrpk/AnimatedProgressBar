@@ -17,7 +17,7 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
-    var style = AnimatedProgressBar.ProgressStyle.WAVE
+    var style = AnimatedProgressBar.Style.WAVE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,22 +30,20 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = MyAdapter(50)
-
-        animatedProgressBar.setProgress((Math.random() * 100).toInt())
     }
 
-    private fun addViewProgrammatically(): AnimatedProgressBar {
-        val animatedProgressBar = AnimatedProgressBar(this)
-        animatedProgressBar.setMax(100)
-        animatedProgressBar.setProgress((Math.random() * 100).toInt())
-        animatedProgressBar.setTrackColor(getRandomColor())
-        animatedProgressBar.setProgressColor(getRandomColor())
-        animatedProgressBar.setProgressTipEnabled(Math.random() < 0.5)
-        animatedProgressBar.setProgressTipColor(getRandomColor())
-        animatedProgressBar.setAnimDuration(500 + (Math.random() * 2000).toInt())
-        animatedProgressBar.setProgressStyle(if (Math.random() < 0.5) AnimatedProgressBar.ProgressStyle.SIMPLE else AnimatedProgressBar.ProgressStyle.WAVE)
-        animatedProgressBar.setTrackWidth(
-            dpToPx(3f + (Math.random() * 10).toFloat(), this).roundToInt()
+    private fun addViewProgrammatically() {
+        val progressBar = AnimatedProgressBar(this)
+        progressBar.setMax(100)
+        progressBar.setProgress((Math.random() * 100).toInt())
+        progressBar.setTrackColor(getRandomColor())
+        progressBar.setProgressColor(getRandomColor())
+        progressBar.setProgressTipEnabled(Math.random() < 0.5)
+        progressBar.setProgressTipColor(getRandomColor())
+        progressBar.setAnimDuration(500 + (Math.random() * 2000).toInt())
+        progressBar.setProgressStyle(if (Math.random() < 0.5) AnimatedProgressBar.Style.LINE else AnimatedProgressBar.Style.WAVE)
+        progressBar.setLineWidth(
+            dpToPx(3 + (Math.random() * 10).roundToInt(), this).roundToInt()
         )
 
         val params = LinearLayout.LayoutParams(
@@ -53,11 +51,9 @@ class MainActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        val marginTopBottom = dpToPx(4f, this).toInt()
+        val marginTopBottom = dpToPx(4, this).toInt()
         params.setMargins(0, marginTopBottom, 0, marginTopBottom)
-        barsContainer.addView(animatedProgressBar, params)
-
-        return animatedProgressBar
+        barsContainer.addView(progressBar, params)
     }
 
     private fun getRandomColor(): Int {
@@ -76,12 +72,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_simple -> {
-                style = AnimatedProgressBar.ProgressStyle.SIMPLE
+                style = AnimatedProgressBar.Style.LINE
                 recyclerView.adapter?.notifyDataSetChanged()
                 true
             }
             R.id.action_waves -> {
-                style = AnimatedProgressBar.ProgressStyle.WAVE
+                style = AnimatedProgressBar.Style.WAVE
                 recyclerView.adapter?.notifyDataSetChanged()
                 true
             }

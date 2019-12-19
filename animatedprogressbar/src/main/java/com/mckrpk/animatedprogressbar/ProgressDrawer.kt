@@ -21,8 +21,8 @@ internal class ProgressDrawer(
     protected var progressAnimator: ValueAnimator? = null
 
     override fun onSizeChanged() {
-        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.trackWidth) / 2
-        val lineBottomY = lineTopY + attrs.trackWidth
+        val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.lineWidth) / 2
+        val lineBottomY = lineTopY + attrs.lineWidth
         progressRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
         trackRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.right, lineBottomY)
         progressTipRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
@@ -42,7 +42,7 @@ internal class ProgressDrawer(
                 if (attrs.progressTipEnabled) {
                     progressTipRect.right = animatedValue
                     progressTipRect.left =
-                        max(attrs.drawRect.left, progressTipRect.right - attrs.trackWidth)
+                        max(attrs.drawRect.left, progressTipRect.right - attrs.lineWidth)
                 }
                 listener.requestInvalidate()
             }

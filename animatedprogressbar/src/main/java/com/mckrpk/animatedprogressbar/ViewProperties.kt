@@ -14,7 +14,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
 
     var animDuration: Int
     var progressTipEnabled: Boolean = false
-    var progressStyle: AnimatedProgressBar.ProgressStyle = AnimatedProgressBar.ProgressStyle.SIMPLE
+    var progressStyle: AnimatedProgressBar.Style = AnimatedProgressBar.Style.LINE
 
     var progressColor: Int = 0
         set(value) {
@@ -32,11 +32,11 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
             progressTipPaint.color = value
         }
 
-    var trackWidth: Float = 0f
+    var lineWidth: Float = 0f
         set(value) {
             field = value
-            cornerRadius = trackWidth / 2
-            progressTipWidth = trackWidth
+            cornerRadius = lineWidth / 2
+            progressTipWidth = lineWidth
         }
     var cornerRadius: Float = 0f
     var progressTipWidth: Float = 0f
@@ -49,7 +49,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
     var drawRect: RectF = RectF()
         set(value) {
             field = value
-            trackWidth = min(drawRect.height(), trackWidth)
+            lineWidth = min(drawRect.height(), lineWidth)
         }
 
     init {
@@ -59,7 +59,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
 
         //OTHERS
         val styleIndex = attrs.getInt(R.styleable.AnimatedProgressBar_animationStyle, 0)
-        progressStyle = AnimatedProgressBar.ProgressStyle.values()[styleIndex]
+        progressStyle = AnimatedProgressBar.Style.values()[styleIndex]
         progressTipEnabled =
             attrs.getBoolean(R.styleable.AnimatedProgressBar_progressTipEnabled, true)
 
@@ -85,12 +85,12 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
         progressTipWidth =
             context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_progress_tip_width)
                 .toFloat()
-        trackWidth = attrs.getDimensionPixelSize(
+        lineWidth = attrs.getDimensionPixelSize(
             R.styleable.AnimatedProgressBar_lineWidth,
             context.resources.getDimensionPixelSize(R.dimen.animated_progress_bar_line_width)
         ).toFloat()
-        cornerRadius = trackWidth / 2
-        progressTipWidth = trackWidth
+        cornerRadius = lineWidth / 2
+        progressTipWidth = lineWidth
 
         //PAINTS
         progressPaint.color = progressColor
@@ -98,7 +98,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
         progressTipPaint.color = progressTipColor
         wavePaint.color = progressColor
         wavePaint.style = Paint.Style.STROKE
-        wavePaint.strokeWidth = trackWidth
+        wavePaint.strokeWidth = lineWidth
         wavePaint.strokeCap = Paint.Cap.ROUND
         wavePaint.strokeJoin = Paint.Join.ROUND
     }
