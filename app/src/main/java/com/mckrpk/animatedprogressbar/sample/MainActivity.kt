@@ -11,25 +11,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.mckrpk.animatedprogressbar.AnimatedProgressBar
 import com.mckrpk.animatedprogressbar.dpToPx
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import com.mckrpk.animatedprogressbar.sample.databinding.ActivityMainBinding
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
     var style = AnimatedProgressBar.Style.WAVE
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             addViewProgrammatically()
         }
 
-        recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = MyAdapter(50)
+        binding.mainContent.recyclerView.setHasFixedSize(true)
+        binding.mainContent.recyclerView.adapter = MyAdapter(50)
     }
 
     private fun addViewProgrammatically() {
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         val marginTopBottom = dpToPx(4, this).toInt()
         params.setMargins(0, marginTopBottom, 0, marginTopBottom)
-        barsContainer.addView(progressBar, params)
+        binding.mainContent.barsContainer.addView(progressBar, params)
     }
 
     private fun getRandomColor(): Int {
@@ -73,12 +74,12 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_simple -> {
                 style = AnimatedProgressBar.Style.LINE
-                recyclerView.adapter?.notifyDataSetChanged()
+                binding.mainContent.recyclerView.adapter?.notifyDataSetChanged()
                 true
             }
             R.id.action_waves -> {
                 style = AnimatedProgressBar.Style.WAVE
-                recyclerView.adapter?.notifyDataSetChanged()
+                binding.mainContent.recyclerView.adapter?.notifyDataSetChanged()
                 true
             }
             else -> super.onOptionsItemSelected(item)
