@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             app:animationDurationInMs="1200"
-            app:animationStyle="wave"
+            app:animationStyle="snake"
             app:lineWidth="5dp"
             app:max="100"
             app:progress="75"

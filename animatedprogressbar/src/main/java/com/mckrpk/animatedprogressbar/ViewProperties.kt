@@ -44,7 +44,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
     var trackPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var progressPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var progressTipPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    var wavePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    var snakePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     var drawRect: RectF = RectF()
         set(value) {
@@ -96,11 +96,11 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
         progressPaint.color = progressColor
         trackPaint.color = trackColor
         progressTipPaint.color = progressTipColor
-        wavePaint.color = progressColor
-        wavePaint.style = Paint.Style.STROKE
-        wavePaint.strokeWidth = lineWidth
-        wavePaint.strokeCap = Paint.Cap.ROUND
-        wavePaint.strokeJoin = Paint.Join.ROUND
+        snakePaint.color = progressColor
+        snakePaint.style = Paint.Style.STROKE
+        snakePaint.strokeWidth = lineWidth
+        snakePaint.strokeCap = Paint.Cap.ROUND
+        snakePaint.strokeJoin = Paint.Join.ROUND
     }
 
     fun getProgressNormalized() = progress / maxProgress

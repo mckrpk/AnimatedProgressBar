@@ -7,7 +7,7 @@
         android:title="@string/action_simple_style"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_waves"
-        android:title="@string/action_wave_style"
+        android:id="@+id/action_snakes"
+        android:title="@string/action_snake_style"
         app:showAsAction="never" />
 </menu>

@@ -6,9 +6,9 @@
 
 ![line style](images/simple.gif "Simple style")
 
-![wave style](images/wave.gif "Wave style")
+![snake style](images/snake.gif "Snake style")
 
-![waves](images/waves.gif "Waves in list")
+![snakes](images/snakes.gif "Snakes in list")
 
 ## 💻 Installation
 Root build.gradle:
@@ -37,7 +37,7 @@ Minimum required SDK version is 14.
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     app:animationDurationInMs="1600"
-    app:animationStyle="wave"
+    app:animationStyle="snake"
     app:lineWidth="6dp"
     app:max="1000"
     app:progress="750"
@@ -58,22 +58,22 @@ progressBar.setProgressColor(Color.GREEN)
 progressBar.setProgressTipEnabled(true)
 progressBar.setProgressTipColor(Color.RED)
 progressBar.setAnimDuration(1200)
-progressBar.setProgressStyle(AnimatedProgressBar.ProgressStyle.WAVE)
+progressBar.setProgressStyle(AnimatedProgressBar.ProgressStyle.SNAKE)
 progressBar.setLineWidth(dpToPx(5, this).toInt())
 ```
 ## 🎨 Attributes
 
-| name               | type              | default         | example |
-|--------------------|-------------------|-----------------|---------|
-| max                | Int               | 100             | 100     |
-| progress           | Int               | 0               | 75      |
-| style              | Enum: Line,  Wave | Line            |![styles](images/styles.gif "Styles")         |
-| trackColor         | Int               | GREY            |![track](images/track.gif "Track")         |
-| progressColor      | Int               | Theme's primary |![progress](images/progress.gif "Progress color")         |
-| progressTipColor   | Int               | Theme's accent  |![progressTipColor](images/progressTipColor.gif "Progress tip color")         |
-| progressTipEnabled | Boolean           | true            |![progressTip](images/progressTip.gif "Progress tip")         |
-| animDuration       | Int               | 1200ms          |![animDuration](images/animDuration.gif "Animation duration")         |
-| lineWidth          | Int               | 4dp             |![lineWidth](images/lineWidth.gif "Line width")         |
+| name               | type               | default         | example |
+|--------------------|--------------------|-----------------|---------|
+| max                | Int                | 100             | 100     |
+| progress           | Int                | 0               | 75      |
+| style              | Enum: Line,  Snake | Line            |![styles](images/styles.gif "Styles")         |
+| trackColor         | Int                | GREY            |![track](images/track.gif "Track")         |
+| progressColor      | Int                | Theme's primary |![progress](images/progress.gif "Progress color")         |
+| progressTipColor   | Int                | Theme's accent  |![progressTipColor](images/progressTipColor.gif "Progress tip color")         |
+| progressTipEnabled | Boolean            | true            |![progressTip](images/progressTip.gif "Progress tip")         |
+| animDuration       | Int                | 1200ms          |![animDuration](images/animDuration.gif "Animation duration")         |
+| lineWidth          | Int                | 4dp             |![lineWidth](images/lineWidth.gif "Line width")         |
 
 ## 📃 License
 

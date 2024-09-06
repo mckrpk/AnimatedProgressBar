@@ -20,7 +20,7 @@ class AnimatedProgressBar @JvmOverloads constructor(
     //Elements to draw
     private var trackDrawer: TrackDrawer?
     private var progressDrawer: ProgressDrawer? = null
-    private var waveDrawer: WaveDrawer? = null
+    private var snakeDrawer: SnakeDrawer? = null
 
     private var attrs: ViewProperties
 
@@ -33,8 +33,8 @@ class AnimatedProgressBar @JvmOverloads constructor(
             }
         }
         trackDrawer = TrackDrawer(this, this.attrs)
-        if (Style.WAVE == this.attrs.progressStyle) {
-            waveDrawer = WaveDrawer(this, this.attrs)
+        if (Style.SNAKE == this.attrs.progressStyle) {
+            snakeDrawer = SnakeDrawer(this, this.attrs)
         } else {
             progressDrawer = ProgressDrawer(this, this.attrs)
         }
@@ -70,13 +70,13 @@ class AnimatedProgressBar @JvmOverloads constructor(
             return
         }
         attrs.progressStyle = progressStyle
-        if (Style.WAVE == this.attrs.progressStyle) {
+        if (Style.SNAKE == this.attrs.progressStyle) {
             progressDrawer?.cancel()
             progressDrawer = null
-            waveDrawer = WaveDrawer(this, this.attrs)
+            snakeDrawer = SnakeDrawer(this, this.attrs)
         } else {
-            waveDrawer?.cancel()
-            waveDrawer = null
+            snakeDrawer?.cancel()
+            snakeDrawer = null
             progressDrawer = ProgressDrawer(this, this.attrs)
         }
         postInvalidate()
@@ -90,7 +90,7 @@ class AnimatedProgressBar @JvmOverloads constructor(
 
         trackDrawer?.onSizeChanged()
         progressDrawer?.onSizeChanged()
-        waveDrawer?.onSizeChanged()
+        snakeDrawer?.onSizeChanged()
         postInvalidate()
     }
 
@@ -112,7 +112,7 @@ class AnimatedProgressBar @JvmOverloads constructor(
         shouldStartAnimation = false
         trackDrawer?.startAnimation(attrs.getProgressNormalized())
         progressDrawer?.startAnimation(attrs.getProgressNormalized())
-        waveDrawer?.startAnimation(attrs.getProgressNormalized())
+        snakeDrawer?.startAnimation(attrs.getProgressNormalized())
     }
 
     //TODO hide from outside
@@ -128,7 +128,7 @@ class AnimatedProgressBar @JvmOverloads constructor(
         val mDrawEndPosY = (h - paddingBottom).toFloat()
 
         attrs.drawRect = RectF(mDrawStartPosX, mDrawStartPosY, mDrawEndPosX, mDrawEndPosY)
-        waveDrawer?.onSizeChanged()
+        snakeDrawer?.onSizeChanged()
         trackDrawer?.onSizeChanged()
         progressDrawer?.onSizeChanged()
 
@@ -169,13 +169,13 @@ class AnimatedProgressBar @JvmOverloads constructor(
         lastDraw = System.currentTimeMillis()
 
         trackDrawer?.draw(canvas)
-        waveDrawer?.draw(canvas)
+        snakeDrawer?.draw(canvas)
         progressDrawer?.draw(canvas)
     }
 
     enum class Style {
         LINE,
-        WAVE
+        SNAKE
     }
 }
 

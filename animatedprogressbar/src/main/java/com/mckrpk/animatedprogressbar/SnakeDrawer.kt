@@ -7,14 +7,14 @@ import android.graphics.RectF
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.*
 
-internal class WaveDrawer(private val listener: DrawingView, private val attrs: ViewProperties) :
+internal class SnakeDrawer(private val listener: DrawingView, private val attrs: ViewProperties) :
     ShapeDrawer() {
 
-    private var wavePath: Path = Path()
-    private lateinit var waveClipPath: Path
-    private lateinit var waveTipRect: RectF
+    private var snakePath: Path = Path()
+    private lateinit var snakeClipPath: Path
+    private lateinit var snakeTipRect: RectF
 
-    private val wavePoints = mutableListOf<MutablePoint>()
+    private val snakePoints = mutableListOf<MutablePoint>()
     private var progressAnimator: ValueAnimator? = null
 
     private var middleY: Float = 0f
@@ -22,16 +22,16 @@ internal class WaveDrawer(private val listener: DrawingView, private val attrs: 
 
     override fun onSizeChanged() {
         middleY = (attrs.drawRect.top + attrs.drawRect.bottom) / 2
-        attrs.wavePaint.strokeWidth = attrs.lineWidth
+        attrs.snakePaint.strokeWidth = attrs.lineWidth
 
         val lineTopY = attrs.drawRect.top + (attrs.drawRect.height() - attrs.lineWidth) / 2
         val lineBottomY = lineTopY + attrs.lineWidth
 
-        waveTipRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
+        snakeTipRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.left, lineBottomY)
 
         val trackRect = RectF(attrs.drawRect.left, lineTopY, attrs.drawRect.right, lineBottomY)
 
-        waveClipPath = Path().apply {
+        snakeClipPath = Path().apply {
             addRoundRect(trackRect, attrs.cornerRadius, attrs.cornerRadius, Path.Direction.CW)
         }
     }
@@ -50,8 +50,8 @@ internal class WaveDrawer(private val listener: DrawingView, private val attrs: 
         val xCoordStart = attrs.drawRect.left + (attrs.cornerRadius * if (longLine) 1 else -1)
 
         progressAnimator?.cancel()
-        wavePoints.clear()
-        wavePath.reset()
+        snakePoints.clear()
+        snakePath.reset()
 
         if (targetProgress == 0f) {
             return
@@ -61,15 +61,15 @@ internal class WaveDrawer(private val listener: DrawingView, private val attrs: 
             duration = attrs.animDuration.toLong()
             interpolator = DecelerateInterpolator(1f)
             addUpdateListener { animation ->
-                wavePath.rewind()
-                wavePath.moveTo(xCoordStart, middleY)
+                snakePath.rewind()
+                snakePath.moveTo(xCoordStart, middleY)
 
                 val angle = animation.animatedValue as Float
                 val animProgress = angle / angleMax
 
-                wavePoints.forEachIndexed { index, mutablePoint ->
-                    val positionFactor = index.toFloat() / wavePoints.size
-                    wavePath.lineTo(
+                snakePoints.forEachIndexed { index, mutablePoint ->
+                    val positionFactor = index.toFloat() / snakePoints.size
+                    snakePath.lineTo(
                         mutablePoint.x,
                         middleY + mutablePoint.y * (1 - animProgress) * positionFactor
                     )
@@ -82,13 +82,13 @@ internal class WaveDrawer(private val listener: DrawingView, private val attrs: 
                 val yVal = sineValue * amplitudeMax
                 val yCoord = middleY + yVal * (1 - animProgress)
 
-                wavePoints.add(MutablePoint(xCoord, yVal))
-                wavePath.lineTo(xCoord, yCoord)
+                snakePoints.add(MutablePoint(xCoord, yVal))
+                snakePath.lineTo(xCoord, yCoord)
 
-                waveTipRect.top = yCoord - attrs.cornerRadius
-                waveTipRect.bottom = yCoord + attrs.cornerRadius
-                waveTipRect.left = xCoord - attrs.cornerRadius
-                waveTipRect.right = xCoord + attrs.cornerRadius
+                snakeTipRect.top = yCoord - attrs.cornerRadius
+                snakeTipRect.bottom = yCoord + attrs.cornerRadius
+                snakeTipRect.left = xCoord - attrs.cornerRadius
+                snakeTipRect.right = xCoord + attrs.cornerRadius
 
                 listener.requestInvalidate()
             }
@@ -100,12 +100,12 @@ internal class WaveDrawer(private val listener: DrawingView, private val attrs: 
     override fun draw(canvas: Canvas) {
         canvas.save()
         if (!longLine) {
-            canvas.clipPath(waveClipPath)
+            canvas.clipPath(snakeClipPath)
         }
 
-        canvas.drawPath(wavePath, attrs.wavePaint)
+        canvas.drawPath(snakePath, attrs.snakePaint)
         if (attrs.progressTipEnabled) {
-            canvas.drawOval(waveTipRect, attrs.progressTipPaint)
+            canvas.drawOval(snakeTipRect, attrs.progressTipPaint)
         }
 
         canvas.restore()

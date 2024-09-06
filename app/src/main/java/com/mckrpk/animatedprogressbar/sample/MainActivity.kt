@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
-    var style = AnimatedProgressBar.Style.WAVE
+    var style = AnimatedProgressBar.Style.SNAKE
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         progressBar.setProgressTipEnabled(Math.random() < 0.5)
         progressBar.setProgressTipColor(getRandomColor())
         progressBar.setAnimDuration(500 + (Math.random() * 2000).toInt())
-        progressBar.setProgressStyle(if (Math.random() < 0.5) AnimatedProgressBar.Style.LINE else AnimatedProgressBar.Style.WAVE)
+        progressBar.setProgressStyle(if (Math.random() < 0.5) AnimatedProgressBar.Style.LINE else AnimatedProgressBar.Style.SNAKE)
         progressBar.setLineWidth(
             dpToPx(3 + (Math.random() * 10).roundToInt(), this).roundToInt()
         )
@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
                 binding.mainContent.recyclerView.adapter?.notifyDataSetChanged()
                 true
             }
-            R.id.action_waves -> {
-                style = AnimatedProgressBar.Style.WAVE
+            R.id.action_snakes -> {
+                style = AnimatedProgressBar.Style.SNAKE
                 binding.mainContent.recyclerView.adapter?.notifyDataSetChanged()
                 true
             }
