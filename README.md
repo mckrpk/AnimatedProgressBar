@@ -11,19 +11,11 @@
 ![snakes](images/snakes.gif "Snakes in list")
 
 ## 💻 Installation
-Root build.gradle:
-``` groovy
-allprojects {
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
-}
-```
 
 Your app's build.gradle:
 ```groovy
 dependencies {
-  implementation 'com.github.mckrpk:AnimatedProgressBar:0.1.0'
+  implementation 'io.github.mckrpk:AnimatedProgressBar:0.2.0'
 }
 ```
 
