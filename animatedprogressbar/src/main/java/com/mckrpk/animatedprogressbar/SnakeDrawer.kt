@@ -54,6 +54,7 @@ internal class SnakeDrawer(private val listener: DrawingView, private val attrs:
         snakePath.reset()
 
         if (targetProgress == 0f) {
+            snakeTipRect = RectF(0.0f,0.0f,0.0f,0.0f)
             return
         }
 

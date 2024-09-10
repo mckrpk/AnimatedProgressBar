@@ -15,7 +15,7 @@
 Your app's build.gradle:
 ```groovy
 dependencies {
-  implementation 'io.github.mckrpk:AnimatedProgressBar:0.2.0'
+  implementation 'io.github.mckrpk:AnimatedProgressBar:0.3.1'
 }
 ```
 

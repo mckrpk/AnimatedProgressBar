@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.vanniktech.maven.publish'
 
 android {
-    compileSdkVersion 34
+    compileSdk 34
 
     namespace 'com.mckrpk.animatedprogressbar'
 
