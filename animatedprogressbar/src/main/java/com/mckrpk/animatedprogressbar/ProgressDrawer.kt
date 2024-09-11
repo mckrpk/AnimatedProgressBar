@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.view.animation.DecelerateInterpolator
-import androidx.core.graphics.withClip
 import kotlin.math.max
 
 internal class ProgressDrawer(
@@ -51,16 +50,25 @@ internal class ProgressDrawer(
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.withClip(clipPath) {
-            drawRoundRect(progressRect, attrs.cornerRadius, attrs.cornerRadius, attrs.progressPaint)
+        val checkpoint = canvas.save()
+        canvas.clipPath(clipPath)
+        try {
+            canvas.drawRoundRect(
+                progressRect,
+                attrs.cornerRadius,
+                attrs.cornerRadius,
+                attrs.progressPaint
+            )
             if (attrs.progressTipEnabled) {
-                drawRoundRect(
+                canvas.drawRoundRect(
                     progressTipRect,
                     attrs.cornerRadius,
                     attrs.cornerRadius,
                     attrs.progressTipPaint
                 )
             }
+        } finally {
+            canvas.restoreToCount(checkpoint)
         }
     }
 

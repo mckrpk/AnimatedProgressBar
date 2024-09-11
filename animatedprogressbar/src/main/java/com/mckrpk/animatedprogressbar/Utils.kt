@@ -6,7 +6,6 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 
 
 fun getThemeColor(context: Context, @AttrRes resName: Int, @ColorRes fallbackColorRes: Int): Int {
@@ -15,7 +14,7 @@ fun getThemeColor(context: Context, @AttrRes resName: Int, @ColorRes fallbackCol
     return if (wasResolved)
         outValue.data
     else
-        ContextCompat.getColor(context, fallbackColorRes)
+        context.resources.getColor(fallbackColorRes)
 }
 
 fun getThemeAccentColor(context: Context, @ColorRes fallbackColorRes: Int): Int {

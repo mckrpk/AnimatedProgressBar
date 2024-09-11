@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Paint
 import android.graphics.RectF
-import androidx.core.content.ContextCompat
 import kotlin.math.min
 
 internal class ViewProperties(attrs: TypedArray, context: Context) {
@@ -79,7 +78,7 @@ internal class ViewProperties(attrs: TypedArray, context: Context) {
         )
         trackColor = attrs.getColor(
             R.styleable.AnimatedProgressBar_trackColor,
-            ContextCompat.getColor(context, R.color.defaultTrack)
+            context.resources.getColor(R.color.defaultTrack)
         )
 
         progressTipWidth =
