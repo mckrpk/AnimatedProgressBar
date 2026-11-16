@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'com.vanniktech.maven.publish'
 
 android {
@@ -8,7 +9,8 @@ android {
 
     defaultConfig {
         applicationId "com.mckrpk.animatedprogressbar.sample"
-        minSdkVersion 14
+        // Jetpack Compose (used by ComposeActivity) requires API 21
+        minSdkVersion 21
         targetSdkVersion 34
         versionCode 1
         versionName "0.1.0"
@@ -22,6 +24,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -44,4 +47,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':animatedprogressbar')
+    implementation project(path: ':animatedprogressbar-compose')
+
+    implementation platform("androidx.compose:compose-bom:$compose_bom_version")
+    implementation 'androidx.activity:activity-compose:1.9.2'
+    implementation 'androidx.compose.material3:material3'
 }
