@@ -20,6 +20,18 @@ dependencies {
 ```
 
 Minimum required SDK version is 14.
+
+### Jetpack Compose
+
+The Compose version lives in a separate artifact, so apps using only XML views don't get the Compose dependencies:
+```groovy
+dependencies {
+  implementation 'io.github.mckrpk:AnimatedProgressBar-compose:<version>'
+}
+```
+
+The Compose artifact requires minimum SDK version 21 and depends on the View artifact (it reuses `AnimatedProgressBar.Style` and the default values).
+
 ## ❔ Usage
 
 ``` xml
@@ -50,9 +62,31 @@ progressBar.setProgressColor(Color.GREEN)
 progressBar.setProgressTipEnabled(true)
 progressBar.setProgressTipColor(Color.RED)
 progressBar.setAnimDuration(1200)
-progressBar.setProgressStyle(AnimatedProgressBar.ProgressStyle.SNAKE)
+progressBar.setProgressStyle(AnimatedProgressBar.Style.SNAKE)
 progressBar.setLineWidth(dpToPx(5, this).toInt())
 ```
+
+or in Jetpack Compose
+
+``` kotlin
+import com.mckrpk.animatedprogressbar.AnimatedProgressBar.Style
+import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBar
+
+AnimatedProgressBar(
+    progress = 75,
+    max = 100,
+    style = Style.SNAKE,
+    trackColor = Color.Gray,
+    progressColor = Color.Green,
+    progressTipEnabled = true,
+    progressTipColor = Color.Red,
+    lineWidth = 5.dp,
+    animationDurationMillis = 1200,
+    modifier = Modifier.padding(horizontal = 8.dp)
+)
+```
+
+Every change of `progress`, `max`, `style` or `animationDurationMillis` replays the animation, like `setProgress()` does. The bar fills the available width and is `max(32dp, 3 * lineWidth)` high unless the `modifier` sets another size. Default colors, line width and duration are the same as in the View version (see `AnimatedProgressBarDefaults`).
 ## 🎨 Attributes
 
 | name               | type               | default         | example |
