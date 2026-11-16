@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'com.vanniktech.maven.publish'
+
+android {
+    compileSdk 34
+
+    namespace 'com.mckrpk.animatedprogressbar.compose'
+
+    defaultConfig {
+        // Jetpack Compose requires API 21
+        minSdkVersion 21
+        targetSdkVersion 34
+
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+dependencies {
+    // Style enum and default resources are shared with the View implementation
+    api project(':animatedprogressbar')
+
+    api platform("androidx.compose:compose-bom:$compose_bom_version")
+    api 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.foundation:foundation'
+    implementation 'androidx.compose.animation:animation-core'
+}
