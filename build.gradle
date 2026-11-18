@@ -2,6 +2,10 @@
 
 buildscript {
     ext.kotlin_version = '2.0.20'
+    // Compose 1.7.x, the newest line that still builds against compileSdk 34 / AGP 8.5
+    ext.compose_bom_version = '2024.09.00'
+    // Version the BOM above maps ui, foundation and animation-core to; used by the library
+    ext.compose_version = '1.7.0'
     repositories {
         google()
         jcenter()
@@ -10,6 +14,8 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // Since Kotlin 2.0 the Compose compiler ships with Kotlin and shares its version
+        classpath "org.jetbrains.kotlin:compose-compiler-gradle-plugin:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

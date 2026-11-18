@@ -38,11 +38,10 @@ internal class ProgressDrawer(
             addUpdateListener { animation ->
                 val animatedValue = animation.animatedValue as Float
                 progressRect.right = animatedValue
-                if (attrs.progressTipEnabled) {
-                    progressTipRect.right = animatedValue
-                    progressTipRect.left =
-                        max(attrs.drawRect.left, progressTipRect.right - attrs.lineWidth)
-                }
+                // Updated even when the tip is hidden, so enabling it later shows it in place
+                progressTipRect.right = animatedValue
+                progressTipRect.left =
+                    max(attrs.drawRect.left, progressTipRect.right - attrs.lineWidth)
                 listener.requestInvalidate()
             }
         }

@@ -1,5 +1,6 @@
 package com.mckrpk.animatedprogressbar.sample
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -80,6 +81,10 @@ class MainActivity : AppCompatActivity() {
             R.id.action_snakes -> {
                 style = AnimatedProgressBar.Style.SNAKE
                 binding.mainContent.recyclerView.adapter?.notifyDataSetChanged()
+                true
+            }
+            R.id.action_compose_demo -> {
+                startActivity(Intent(this, ComposeActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

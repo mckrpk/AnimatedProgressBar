@@ -2,4 +2,6 @@
     <string name="app_name">ProgressBarDemo</string>
     <string name="action_simple_style">Simple</string>
     <string name="action_snake_style">Snakes</string>
+    <string name="action_compose_demo">Compose vs XML</string>
+    <string name="compose_demo_title">Compose vs XML</string>
 </resources>

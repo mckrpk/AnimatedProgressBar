@@ -10,4 +10,8 @@
         android:id="@+id/action_snakes"
         android:title="@string/action_snake_style"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_compose_demo"
+        android:title="@string/action_compose_demo"
+        app:showAsAction="never" />
 </menu>
