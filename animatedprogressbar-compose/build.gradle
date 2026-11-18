@@ -1,7 +1,38 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'com.vanniktech.maven.publish'
+
+kotlin {
+    androidTarget {
+        publishLibraryVariants('release')
+        compilations.configureEach {
+            kotlinOptions { jvmTarget = '17' }
+        }
+    }
+    jvm {
+        compilations.configureEach {
+            kotlinOptions { jvmTarget = '17' }
+        }
+    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    // ponytail: no wasmJs/js target yet, add when someone asks for web
+
+    sourceSets {
+        commonMain.dependencies {
+            // Compose Multiplatform artifacts; on Android they resolve to androidx.compose 1.7.x
+            api "org.jetbrains.compose.ui:ui:$compose_multiplatform_version"
+            implementation "org.jetbrains.compose.foundation:foundation:$compose_multiplatform_version"
+            implementation "org.jetbrains.compose.animation:animation-core:$compose_multiplatform_version"
+        }
+        androidMain.dependencies {
+            // Theme colors and the deprecated overload taking the View's Style enum
+            api project(':animatedprogressbar')
+        }
+    }
+}
 
 android {
     compileSdk 34
@@ -11,40 +42,12 @@ android {
     defaultConfig {
         // Jetpack Compose requires API 21
         minSdkVersion 21
-        targetSdkVersion 34
 
         consumerProguardFiles 'consumer-rules.pro'
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    buildFeatures {
-        compose true
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
-    kotlinOptions {
-        jvmTarget = '17'
-    }
-}
-
-dependencies {
-    // Style enum and default resources are shared with the View implementation
-    api project(':animatedprogressbar')
-
-    // Explicit versions instead of the BOM, so the published artifact doesn't force
-    // the BOM's constraints on every Compose library in the consumer's app.
-    // Same versions as compose-bom 2024.09.00 used by the sample app.
-    api "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.animation:animation-core:$compose_version"
 }

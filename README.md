@@ -15,22 +15,22 @@
 Your app's build.gradle:
 ```groovy
 dependencies {
-  implementation 'io.github.mckrpk:AnimatedProgressBar:1.1.0'
+  implementation 'io.github.mckrpk:AnimatedProgressBar:1.2.0'
 }
 ```
 
 Minimum required SDK version is 14.
 
-### Jetpack Compose
+### Jetpack Compose / Compose Multiplatform
 
 The Compose version lives in a separate artifact, so apps using only XML views don't get the Compose dependencies:
 ```groovy
 dependencies {
-  implementation 'io.github.mckrpk:AnimatedProgressBar-compose:1.1.0'
+  implementation 'io.github.mckrpk:AnimatedProgressBar-compose:1.2.0'
 }
 ```
 
-The Compose artifact requires minimum SDK version 21 and depends on the View artifact (it reuses `AnimatedProgressBar.Style` and the default values).
+The Compose artifact is a Kotlin Multiplatform library with Android, iOS (`iosArm64`, `iosSimulatorArm64`, `iosX64`) and desktop JVM targets, so it can go into `commonMain` of a Compose Multiplatform project. On Android it requires minimum SDK version 21 and uses the View artifact for the theme's default colors.
 
 ## ❔ Usage
 
@@ -66,16 +66,16 @@ progressBar.setProgressStyle(AnimatedProgressBar.Style.SNAKE)
 progressBar.setLineWidth(dpToPx(5, this).toInt())
 ```
 
-or in Jetpack Compose
+or in Compose
 
 ``` kotlin
-import com.mckrpk.animatedprogressbar.AnimatedProgressBar.Style
 import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBar
+import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBarStyle
 
 AnimatedProgressBar(
     progress = 75,
     max = 100,
-    style = Style.SNAKE,
+    style = AnimatedProgressBarStyle.SNAKE,
     trackColor = Color.Gray,
     progressColor = Color.Green,
     progressTipEnabled = true,
@@ -86,7 +86,7 @@ AnimatedProgressBar(
 )
 ```
 
-Every change of `progress`, `max`, `style` or `animationDurationMillis` replays the animation, like `setProgress()` does. The bar fills the available width and is `max(32dp, 3 * lineWidth)` high unless the `modifier` sets another size. Default colors, line width and duration are the same as in the View version (see `AnimatedProgressBarDefaults`).
+Every change of `progress`, `max`, `style` or `animationDurationMillis` replays the animation, like `setProgress()` does. The bar fills the available width and is `max(32dp, 3 * lineWidth)` high unless the `modifier` sets another size. Default colors, line width and duration are the same as in the View version (see `AnimatedProgressBarDefaults`). On Android the default progress and tip colors come from the theme's `colorPrimary` and `colorAccent`; on other platforms they are fixed.
 ## 🎨 Attributes
 
 | name               | type               | default         | example |
