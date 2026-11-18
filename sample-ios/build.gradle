@@ -1,0 +1,19 @@
+// Compose UI of the iOS sample app, built into the SampleShared framework used by iosApp/
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+
+kotlin {
+    [iosArm64(), iosSimulatorArm64()].each {
+        it.binaries.framework {
+            baseName = 'SampleShared'
+            isStatic = true
+        }
+    }
+
+    sourceSets {
+        iosMain.dependencies {
+            implementation project(':animatedprogressbar-compose')
+            implementation "org.jetbrains.compose.material3:material3:1.7.0"
+        }
+    }
+}

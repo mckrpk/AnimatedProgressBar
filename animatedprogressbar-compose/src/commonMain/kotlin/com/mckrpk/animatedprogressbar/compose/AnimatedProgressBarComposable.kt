@@ -23,27 +23,20 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
-import com.mckrpk.animatedprogressbar.R
-import com.mckrpk.animatedprogressbar.getThemeAccentColor
-import com.mckrpk.animatedprogressbar.getThemePrimaryColor
+import androidx.compose.ui.unit.dp
 import kotlin.math.PI
 import kotlin.math.ln
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
 import kotlin.random.Random
-import com.mckrpk.animatedprogressbar.AnimatedProgressBar as AnimatedProgressBarView
 
 /**
- * Jetpack Compose version of [com.mckrpk.animatedprogressbar.AnimatedProgressBar].
+ * Compose Multiplatform version of the `com.mckrpk.animatedprogressbar.AnimatedProgressBar` View.
  *
  * Every change of [progress], [max], [style] or [animationDurationMillis] replays the
  * animation from the start, the same way `setProgress()` does in the View version.
@@ -52,7 +45,7 @@ import com.mckrpk.animatedprogressbar.AnimatedProgressBar as AnimatedProgressBar
  *
  * @param progress current progress, from 0 to [max]
  * @param max maximum progress
- * @param style [AnimatedProgressBarView.Style.LINE] or [AnimatedProgressBarView.Style.SNAKE]
+ * @param style [AnimatedProgressBarStyle.LINE] or [AnimatedProgressBarStyle.SNAKE]
  * @param lineWidth thickness of the track and the progress line
  */
 @Composable
@@ -60,7 +53,7 @@ fun AnimatedProgressBar(
     progress: Int,
     modifier: Modifier = Modifier,
     max: Int = 100,
-    style: AnimatedProgressBarView.Style = AnimatedProgressBarView.Style.LINE,
+    style: AnimatedProgressBarStyle = AnimatedProgressBarStyle.LINE,
     trackColor: Color = AnimatedProgressBarDefaults.trackColor(),
     progressColor: Color = AnimatedProgressBarDefaults.progressColor(),
     progressTipColor: Color = AnimatedProgressBarDefaults.progressTipColor(),
@@ -104,7 +97,7 @@ fun AnimatedProgressBar(
         )
 
         drawTrack(lineWidthPx, Decelerate.transform(min(1f, time * 2)), trackColor)
-        if (style == AnimatedProgressBarView.Style.SNAKE) {
+        if (style == AnimatedProgressBarStyle.SNAKE) {
             drawSnake(
                 snakePath, trackClip, lineWidthPx, targetProgress, time, snakeInverse,
                 progressColor, progressTipColor, progressTipEnabled
@@ -118,33 +111,39 @@ fun AnimatedProgressBar(
     }
 }
 
+enum class AnimatedProgressBarStyle { LINE, SNAKE }
+
+/** Same defaults as the View version. */
 object AnimatedProgressBarDefaults {
     @Composable
-    fun trackColor(): Color = colorResource(R.color.defaultTrack)
+    fun trackColor(): Color = Color(0xFFD1DCDC)
 
-    /** Theme's `colorPrimary`, like in the View version. */
+    /** Theme's `colorPrimary` on Android, a fixed teal elsewhere. */
     @Composable
-    fun progressColor(): Color {
-        val context = LocalContext.current
-        return remember(context) { Color(getThemePrimaryColor(context, R.color.defaultProgress)) }
-    }
+    fun progressColor(): Color = platformProgressColor()
 
-    /** Theme's `colorAccent`, like in the View version. */
+    /** Theme's `colorAccent` on Android, a fixed pink elsewhere. */
     @Composable
-    fun progressTipColor(): Color {
-        val context = LocalContext.current
-        return remember(context) { Color(getThemeAccentColor(context, R.color.defaultTip)) }
-    }
+    fun progressTipColor(): Color = platformProgressTipColor()
 
     @Composable
-    fun lineWidth(): Dp = dimensionResource(R.dimen.animated_progress_bar_line_width)
+    fun lineWidth(): Dp = 4.dp
 
     @Composable
-    fun animationDurationMillis(): Int = integerResource(R.integer.animation_duration)
+    fun animationDurationMillis(): Int = 1200
 
     @Composable
-    internal fun minHeight(): Dp = dimensionResource(R.dimen.animated_progress_bar_min_height)
+    internal fun minHeight(): Dp = 32.dp
 }
+
+internal val DefaultProgressColor = Color(0xFF008577)
+internal val DefaultProgressTipColor = Color(0xFFD81B60)
+
+@Composable
+internal expect fun platformProgressColor(): Color
+
+@Composable
+internal expect fun platformProgressTipColor(): Color
 
 // Same curve as DecelerateInterpolator(1f) used by the View drawers
 private val Decelerate = Easing { 1f - (1f - it) * (1f - it) }

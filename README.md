@@ -1,6 +1,6 @@
 ##   AnimatedProgressBar
 
-<p>Animated determinate horizontal Progress Bar for Android.</p>
+Animated determinate horizontal progress bar for Android Views and Compose on Android, iOS, and desktop.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -12,30 +12,50 @@
 
 ## 💻 Installation
 
-Your app's build.gradle:
+### Android XML Views
+
+Add the View artifact to your app module. It supports API 14 and up and has no Compose dependencies.
+
 ```groovy
 dependencies {
-  implementation 'io.github.mckrpk:AnimatedProgressBar:1.1.0'
+  implementation 'io.github.mckrpk:AnimatedProgressBar:1.2.0'
 }
 ```
 
-Minimum required SDK version is 14.
+### Android-only Jetpack Compose
 
-### Jetpack Compose
+Add the Compose artifact to your Compose-enabled app module. Gradle selects the Android variant automatically. It supports API 21 and up.
 
-The Compose version lives in a separate artifact, so apps using only XML views don't get the Compose dependencies:
 ```groovy
 dependencies {
-  implementation 'io.github.mckrpk:AnimatedProgressBar-compose:1.1.0'
+  implementation 'io.github.mckrpk:AnimatedProgressBar-compose:1.2.0'
 }
 ```
 
-The Compose artifact requires minimum SDK version 21 and depends on the View artifact (it reuses `AnimatedProgressBar.Style` and the default values).
+### Compose Multiplatform
+
+Add the same artifact to `commonMain` of your Compose Multiplatform module. It supports Android, iOS (`iosArm64`, `iosSimulatorArm64`, `iosX64`), and desktop JVM.
+
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("io.github.mckrpk:AnimatedProgressBar-compose:1.2.0")
+        }
+    }
+}
+```
 
 ## ❔ Usage
 
+### XML layout
+
+Add the View to your layout. If the root already declares the `app` namespace, reuse it. The color resources below are examples from the Android sample. Supply your own resources or omit the color attributes to use the defaults.
+
 ``` xml
 <com.mckrpk.animatedprogressbar.AnimatedProgressBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/animatedProgressBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -51,7 +71,7 @@ The Compose artifact requires minimum SDK version 21 and depends on the View art
     app:trackColor="@color/colorGray" />
 ```
 
-or programmaticaly
+### Programmatic Android View
 
 ``` kotlin
 val progressBar = AnimatedProgressBar(this)
@@ -66,16 +86,18 @@ progressBar.setProgressStyle(AnimatedProgressBar.Style.SNAKE)
 progressBar.setLineWidth(dpToPx(5, this).toInt())
 ```
 
-or in Jetpack Compose
+### Compose
+
+Use `AnimatedProgressBarStyle` in new code and in `commonMain`. Android callers passing the View's `AnimatedProgressBar.Style` can use the deprecated compatibility overload.
 
 ``` kotlin
-import com.mckrpk.animatedprogressbar.AnimatedProgressBar.Style
 import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBar
+import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBarStyle
 
 AnimatedProgressBar(
     progress = 75,
     max = 100,
-    style = Style.SNAKE,
+    style = AnimatedProgressBarStyle.SNAKE,
     trackColor = Color.Gray,
     progressColor = Color.Green,
     progressTipEnabled = true,
@@ -86,7 +108,7 @@ AnimatedProgressBar(
 )
 ```
 
-Every change of `progress`, `max`, `style` or `animationDurationMillis` replays the animation, like `setProgress()` does. The bar fills the available width and is `max(32dp, 3 * lineWidth)` high unless the `modifier` sets another size. Default colors, line width and duration are the same as in the View version (see `AnimatedProgressBarDefaults`).
+Every change of `progress`, `max`, `style` or `animationDurationMillis` replays the animation, like `setProgress()` does. The bar fills the available width and is `max(32dp, 3 * lineWidth)` high unless the `modifier` sets another size. Default colors, line width and duration are the same as in the View version (see `AnimatedProgressBarDefaults`). On Android the default progress and tip colors come from the theme's `colorPrimary` and `colorAccent`; on other platforms they are fixed.
 ## 🎨 Attributes
 
 | name               | type               | default         | example |
@@ -100,6 +122,15 @@ Every change of `progress`, `max`, `style` or `animationDurationMillis` replays 
 | progressTipEnabled | Boolean            | true            |![progressTip](images/progressTip.gif "Progress tip")         |
 | animDuration       | Int                | 1200ms          |![animDuration](images/animDuration.gif "Animation duration")         |
 | lineWidth          | Int                | 4dp             |![lineWidth](images/lineWidth.gif "Line width")         |
+
+## 📱 Samples
+
+- `app`: Android sample with the View version and a screen comparing it with the Compose version. On a fresh checkout, set `android.useAndroidX=true` in the root `gradle.properties` or pass `-Pandroid.useAndroidX=true` to Gradle.
+- `iosApp`: iOS sample using the Compose version (UI in the `sample-ios` module). Needs [XcodeGen](https://github.com/yonaskolb/XcodeGen):
+  ```bash
+  cd iosApp && xcodegen generate && open iosApp.xcodeproj
+  ```
+  Set your own `DEVELOPMENT_TEAM` in `iosApp/project.yml` to run it on a device. `SmokeUITests` taps the button and saves screenshots of the animation.
 
 ## 📃 License
 

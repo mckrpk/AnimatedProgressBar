@@ -30,6 +30,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.mckrpk.animatedprogressbar.AnimatedProgressBar
 import kotlin.random.Random
 import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBar as ComposeAnimatedProgressBar
+import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBarStyle
 
 /**
  * Shows the Compose version next to the View version with the same settings.
@@ -77,7 +78,7 @@ private fun ComparisonScreen() {
             Text("Compose", style = MaterialTheme.typography.labelMedium)
             ComposeAnimatedProgressBar(
                 progress = progress,
-                style = style,
+                style = AnimatedProgressBarStyle.valueOf(style.name),
                 trackColor = colorResource(R.color.colorGray),
                 progressColor = colorResource(R.color.colorPrimary),
                 progressTipColor = colorResource(R.color.colorAccent),
