@@ -80,6 +80,7 @@ fun AnimatedProgressBar(
     }
 
     val snakePath = remember { Path() }
+    val trackClip = remember { Path() }
     // Like wrap_content of the View: a size set through [modifier] takes precedence
     val defaultHeight = maxOf(AnimatedProgressBarDefaults.minHeight(), lineWidth * 3)
 
@@ -96,16 +97,21 @@ fun AnimatedProgressBar(
     ) {
         val lineWidthPx = min(lineWidth.toPx(), size.height)
         val time = animTime.value
+        // Reused between frames instead of allocating a new Path on every draw
+        trackClip.rewind()
+        trackClip.addRoundRect(
+            RoundRect(lineRect(lineWidthPx, size.width), CornerRadius(lineWidthPx / 2))
+        )
 
         drawTrack(lineWidthPx, Decelerate.transform(min(1f, time * 2)), trackColor)
         if (style == AnimatedProgressBarView.Style.SNAKE) {
             drawSnake(
-                snakePath, lineWidthPx, targetProgress, time, snakeInverse,
+                snakePath, trackClip, lineWidthPx, targetProgress, time, snakeInverse,
                 progressColor, progressTipColor, progressTipEnabled
             )
         } else {
             drawProgressLine(
-                lineWidthPx, targetProgress * Decelerate.transform(time),
+                trackClip, lineWidthPx, targetProgress * Decelerate.transform(time),
                 progressColor, progressTipColor, progressTipEnabled
             )
         }
@@ -118,13 +124,17 @@ object AnimatedProgressBarDefaults {
 
     /** Theme's `colorPrimary`, like in the View version. */
     @Composable
-    fun progressColor(): Color =
-        Color(getThemePrimaryColor(LocalContext.current, R.color.defaultProgress))
+    fun progressColor(): Color {
+        val context = LocalContext.current
+        return remember(context) { Color(getThemePrimaryColor(context, R.color.defaultProgress)) }
+    }
 
     /** Theme's `colorAccent`, like in the View version. */
     @Composable
-    fun progressTipColor(): Color =
-        Color(getThemeAccentColor(LocalContext.current, R.color.defaultTip))
+    fun progressTipColor(): Color {
+        val context = LocalContext.current
+        return remember(context) { Color(getThemeAccentColor(context, R.color.defaultTip)) }
+    }
 
     @Composable
     fun lineWidth(): Dp = dimensionResource(R.dimen.animated_progress_bar_line_width)
@@ -154,6 +164,7 @@ private fun DrawScope.drawTrack(lineWidth: Float, fraction: Float, color: Color)
 
 /** Mirrors ProgressDrawer: a rounded bar clipped to the track, with an optional tip. */
 private fun DrawScope.drawProgressLine(
+    trackClip: Path,
     lineWidth: Float,
     fraction: Float,
     progressColor: Color,
@@ -162,9 +173,8 @@ private fun DrawScope.drawProgressLine(
 ) {
     val radius = CornerRadius(lineWidth / 2)
     val trackRect = lineRect(lineWidth, size.width)
-    val clip = Path().apply { addRoundRect(RoundRect(trackRect, radius)) }
     val right = fraction * size.width
-    clipPath(clip) {
+    clipPath(trackClip) {
         val progressRect = lineRect(lineWidth, right)
         drawRoundRect(progressColor, progressRect.topLeft, progressRect.size, radius)
         if (tipEnabled) {
@@ -185,6 +195,7 @@ private fun DrawScope.drawProgressLine(
  */
 private fun DrawScope.drawSnake(
     path: Path,
+    trackClip: Path,
     lineWidth: Float,
     targetProgress: Float,
     time: Float,
@@ -240,9 +251,6 @@ private fun DrawScope.drawSnake(
     if (longLine) {
         drawSnakeBody()
     } else {
-        val clip = Path().apply {
-            addRoundRect(RoundRect(lineRect(lineWidth, size.width), CornerRadius(cornerRadius)))
-        }
-        clipPath(clip, block = drawSnakeBody)
+        clipPath(trackClip, block = drawSnakeBody)
     }
 }
