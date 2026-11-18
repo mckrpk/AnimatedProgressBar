@@ -71,10 +71,11 @@ fun AnimatedProgressBar(
     val targetProgress = if (max > 0) (progress.toFloat() / max).coerceIn(0f, 1f) else 0f
 
     // Time fraction of the animation; easing is applied per element while drawing
-    val animTime = remember { Animatable(0f) }
-    val snakeInverse = remember(targetProgress, style) { Random.nextBoolean() }
-    LaunchedEffect(targetProgress, style, animationDurationMillis) {
-        animTime.snapTo(0f)
+    // A new Animatable starts at 0 in the same composition, so no frame shows the new
+    // target with the previous animation's finished time
+    val animTime = remember(progress, max, style, animationDurationMillis) { Animatable(0f) }
+    val snakeInverse = remember(progress, max, style) { Random.nextBoolean() }
+    LaunchedEffect(animTime) {
         animTime.animateTo(1f, tween(animationDurationMillis, easing = LinearEasing))
     }
 
@@ -87,8 +88,10 @@ fun AnimatedProgressBar(
             .fillMaxWidth()
             .height(defaultHeight)
             .semantics {
-                progressBarRangeInfo =
-                    ProgressBarRangeInfo(progress.toFloat(), 0f..max.coerceAtLeast(0).toFloat())
+                val rangeEnd = max.coerceAtLeast(0)
+                progressBarRangeInfo = ProgressBarRangeInfo(
+                    progress.coerceIn(0, rangeEnd).toFloat(), 0f..rangeEnd.toFloat()
+                )
             }
     ) {
         val lineWidthPx = min(lineWidth.toPx(), size.height)
