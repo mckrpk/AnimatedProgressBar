@@ -4,6 +4,8 @@ buildscript {
     ext.kotlin_version = '2.0.20'
     // Compose 1.7.x, the newest line that still builds against compileSdk 34 / AGP 8.5
     ext.compose_bom_version = '2024.09.00'
+    // Version the BOM above maps ui, foundation and animation-core to; used by the library
+    ext.compose_version = '1.7.0'
     repositories {
         google()
         jcenter()

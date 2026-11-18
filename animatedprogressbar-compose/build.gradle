@@ -41,8 +41,10 @@ dependencies {
     // Style enum and default resources are shared with the View implementation
     api project(':animatedprogressbar')
 
-    api platform("androidx.compose:compose-bom:$compose_bom_version")
-    api 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.foundation:foundation'
-    implementation 'androidx.compose.animation:animation-core'
+    // Explicit versions instead of the BOM, so the published artifact doesn't force
+    // the BOM's constraints on every Compose library in the consumer's app.
+    // Same versions as compose-bom 2024.09.00 used by the sample app.
+    api "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.animation:animation-core:$compose_version"
 }
