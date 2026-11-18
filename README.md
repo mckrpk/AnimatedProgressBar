@@ -15,7 +15,7 @@
 Your app's build.gradle:
 ```groovy
 dependencies {
-  implementation 'io.github.mckrpk:AnimatedProgressBar:1.0.0'
+  implementation 'io.github.mckrpk:AnimatedProgressBar:1.1.0'
 }
 ```
 
@@ -26,7 +26,7 @@ Minimum required SDK version is 14.
 The Compose version lives in a separate artifact, so apps using only XML views don't get the Compose dependencies:
 ```groovy
 dependencies {
-  implementation 'io.github.mckrpk:AnimatedProgressBar-compose:<version>'
+  implementation 'io.github.mckrpk:AnimatedProgressBar-compose:1.1.0'
 }
 ```
 
