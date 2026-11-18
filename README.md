@@ -1,6 +1,6 @@
 ##   AnimatedProgressBar
 
-<p>Animated determinate horizontal Progress Bar for Android.</p>
+Animated determinate horizontal progress bar for Android Views and Compose on Android, iOS, and desktop.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -12,30 +12,50 @@
 
 ## 💻 Installation
 
-Your app's build.gradle:
+### Android XML Views
+
+Add the View artifact to your app module. It supports API 14 and up and has no Compose dependencies.
+
 ```groovy
 dependencies {
   implementation 'io.github.mckrpk:AnimatedProgressBar:1.2.0'
 }
 ```
 
-Minimum required SDK version is 14.
+### Android-only Jetpack Compose
 
-### Jetpack Compose / Compose Multiplatform
+Add the Compose artifact to your Compose-enabled app module. Gradle selects the Android variant automatically. It supports API 21 and up.
 
-The Compose version lives in a separate artifact, so apps using only XML views don't get the Compose dependencies:
 ```groovy
 dependencies {
   implementation 'io.github.mckrpk:AnimatedProgressBar-compose:1.2.0'
 }
 ```
 
-The Compose artifact is a Kotlin Multiplatform library with Android, iOS (`iosArm64`, `iosSimulatorArm64`, `iosX64`) and desktop JVM targets, so it can go into `commonMain` of a Compose Multiplatform project. On Android it requires minimum SDK version 21 and uses the View artifact for the theme's default colors.
+### Compose Multiplatform
+
+Add the same artifact to `commonMain` of your Compose Multiplatform module. It supports Android, iOS (`iosArm64`, `iosSimulatorArm64`, `iosX64`), and desktop JVM.
+
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("io.github.mckrpk:AnimatedProgressBar-compose:1.2.0")
+        }
+    }
+}
+```
 
 ## ❔ Usage
 
+### XML layout
+
+Add the View to your layout. If the root already declares the `app` namespace, reuse it. The color resources below are examples from the Android sample. Supply your own resources or omit the color attributes to use the defaults.
+
 ``` xml
 <com.mckrpk.animatedprogressbar.AnimatedProgressBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/animatedProgressBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -51,7 +71,7 @@ The Compose artifact is a Kotlin Multiplatform library with Android, iOS (`iosAr
     app:trackColor="@color/colorGray" />
 ```
 
-or programmaticaly
+### Programmatic Android View
 
 ``` kotlin
 val progressBar = AnimatedProgressBar(this)
@@ -66,7 +86,9 @@ progressBar.setProgressStyle(AnimatedProgressBar.Style.SNAKE)
 progressBar.setLineWidth(dpToPx(5, this).toInt())
 ```
 
-or in Compose
+### Compose
+
+Use `AnimatedProgressBarStyle` in new code and in `commonMain`. Android callers passing the View's `AnimatedProgressBar.Style` can use the deprecated compatibility overload.
 
 ``` kotlin
 import com.mckrpk.animatedprogressbar.compose.AnimatedProgressBar
@@ -103,7 +125,7 @@ Every change of `progress`, `max`, `style` or `animationDurationMillis` replays 
 
 ## 📱 Samples
 
-- `app`: Android sample with the View version and a screen comparing it with the Compose version.
+- `app`: Android sample with the View version and a screen comparing it with the Compose version. On a fresh checkout, set `android.useAndroidX=true` in the root `gradle.properties` or pass `-Pandroid.useAndroidX=true` to Gradle.
 - `iosApp`: iOS sample using the Compose version (UI in the `sample-ios` module). Needs [XcodeGen](https://github.com/yonaskolb/XcodeGen):
   ```bash
   cd iosApp && xcodegen generate && open iosApp.xcodeproj

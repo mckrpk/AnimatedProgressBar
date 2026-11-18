@@ -24,10 +24,7 @@ internal actual fun platformProgressTipColor(): Color {
 }
 
 /** Kept so 1.1.0 code passing the View's `Style` enum still compiles. */
-@Deprecated(
-    "Use AnimatedProgressBarStyle, which works on every platform",
-    ReplaceWith("AnimatedProgressBarStyle.valueOf(style.name)")
-)
+@Deprecated("Use AnimatedProgressBarStyle, which works on every platform")
 @Composable
 fun AnimatedProgressBar(
     progress: Int,
