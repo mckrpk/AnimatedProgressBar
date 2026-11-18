@@ -101,6 +101,15 @@ Every change of `progress`, `max`, `style` or `animationDurationMillis` replays 
 | animDuration       | Int                | 1200ms          |![animDuration](images/animDuration.gif "Animation duration")         |
 | lineWidth          | Int                | 4dp             |![lineWidth](images/lineWidth.gif "Line width")         |
 
+## 📱 Samples
+
+- `app`: Android sample with the View version and a screen comparing it with the Compose version.
+- `iosApp`: iOS sample using the Compose version (UI in the `sample-ios` module). Needs [XcodeGen](https://github.com/yonaskolb/XcodeGen):
+  ```bash
+  cd iosApp && xcodegen generate && open iosApp.xcodeproj
+  ```
+  Set your own `DEVELOPMENT_TEAM` in `iosApp/project.yml` to run it on a device. `SmokeUITests` taps the button and saves screenshots of the animation.
+
 ## 📃 License
 
     Copyright 2019 Michał Karpiuk

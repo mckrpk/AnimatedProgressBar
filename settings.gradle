@@ -1,2 +1,2 @@
-include ':app', ':animatedprogressbar', ':animatedprogressbar-compose'
+include ':app', ':animatedprogressbar', ':animatedprogressbar-compose', ':sample-ios'
 rootProject.name='AnimatedProgressBar'

@@ -1,0 +1,51 @@
+# Generate iosApp.xcodeproj with: xcodegen generate (run in this folder)
+name: iosApp
+options:
+  bundleIdPrefix: com.mckrpk.animatedprogressbar
+  deploymentTarget:
+    iOS: "15.0"
+settings:
+  base:
+    DEVELOPMENT_TEAM: 52A9F7UJLG
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    sources: [iosApp]
+    info:
+      path: iosApp/Info.plist
+      properties:
+        CFBundleDisplayName: AnimatedProgressBar
+        UILaunchScreen: {}
+        CADisableMinimumFrameDurationOnPhone: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mckrpk.animatedprogressbar.sample
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        FRAMEWORK_SEARCH_PATHS: $(SRCROOT)/../sample-ios/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        OTHER_LDFLAGS: [-framework, SampleShared]
+    preBuildScripts:
+      - name: Build Kotlin framework
+        basedOnDependencyAnalysis: false
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :sample-ios:embedAndSignAppleFrameworkForXcode
+  iosAppUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [iosAppUITests]
+    dependencies:
+      - target: iosApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mckrpk.animatedprogressbar.sample.uitests
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  iosApp:
+    build:
+      targets:
+        iosApp: all
+    test:
+      targets: [iosAppUITests]
